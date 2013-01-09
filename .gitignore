@@ -3,3 +3,5 @@ doc/
 node_modules/
 spec/javascripts/*.js
 _*
+*.sublime*
+CakeFile
