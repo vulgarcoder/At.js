@@ -257,7 +257,7 @@
     # @return [?] 配置项的值
     get_opt: (key, default_value) ->
       try
-        value = @settings[@current_flag][key] if @current_flag
+        value = @settings[@current_flag][key] if @current_flag?
         value = @common_settings[key] if value is undefined
         value = if value is undefined then default_value else value
       catch e
