@@ -429,13 +429,14 @@
       @$el = $("##{@id}")
 
       $menu = @$el.find('ul')
-      $menu.on 'mouseenter.view','li', (e) ->
+      $menu.on 'mouseenter.view',@controller.get_opt('item_selector'), (e) ->
         $menu.find('.cur').removeClass 'cur'
         $(e.currentTarget).addClass 'cur'
       .on 'click', (e) =>
-        e.stopPropagation()
-        e.preventDefault()
-        @$el.data("_view").choose()
+        if @$el.data("_view")?
+            e.stopPropagation()
+            e.preventDefault()
+            @$el.data("_view").choose() 
 
     # 判断视图是否存在
     #
@@ -463,16 +464,18 @@
       @$el.offset {left:rect.left, top:rect.bottom}
 
     next: ->
+      items = @$el.find(@controller.get_opt('item_selector'))
       cur = @$el.find('.cur').removeClass('cur')
-      next = cur.next()
-      next = $(@$el.find('li')[0]) if not next.length
-      next.addClass 'cur'
+      cur_index = items.index(cur)
+      next_index = if cur_index==items.length-1 then 0 else cur_index+1
+      items.eq(next_index).addClass 'cur'
 
     prev: ->
+      items = @$el.find(@controller.get_opt('item_selector'))
       cur = @$el.find('.cur').removeClass('cur')
-      prev = cur.prev()
-      prev = @$el.find('li').last() if not prev.length
-      prev.addClass('cur')
+      cur_index = items.index(cur)
+      prev_index = if prev_index==0 then items.length-1 else cur_index-1
+      items.eq(prev_index).addClass 'cur'
 
     show: ->
       @$el.show() if not this.visible()
@@ -506,7 +509,7 @@
         $ul.append @controller.callbacks("highlighter").call(@controller, li, @controller.query.text)
 
       this.show()
-      $ul.find("li:eq(0)").addClass "cur"
+      $ul.find(@controller.get_opt('item_selector')+":eq(0)").addClass "cur"
 
 
   DEFAULT_TPL = "<li data-value='${name}'>${name}</li>"
@@ -530,5 +533,6 @@
       display_flag: yes
       display_timeout: 300
       tpl: DEFAULT_TPL
+      item_selector: "li"
 
 )(window.jQuery)
