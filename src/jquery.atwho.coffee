@@ -347,7 +347,7 @@
 
       $inputor.val text
       $inputor.caretPos start_str.length + str.length + 1
-      $inputor.change()
+      $inputor.change().focus()
 
     on_keyup: (e) ->
       switch e.keyCode
