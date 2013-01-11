@@ -458,9 +458,14 @@
 
     # 重置视图在页面中的位置.
     reposition: ->
-      rect = @controller.rect()
-      if rect.bottom + @$el.height() - $(window).scrollTop() > $(window).height()
-          rect.bottom = rect.top - @$el.height()
+      if @controller.current_flag
+          rect = @controller.rect()
+          if rect.bottom + @$el.height() - $(window).scrollTop() > $(window).height()
+              rect.bottom = rect.top - @$el.height()
+      else
+          rect = @controller.$inputor.offset()
+          rect.bottom = rect.top + @controller.$inputor.outerHeight()
+
       @$el.offset {left:rect.left, top:rect.bottom}
 
     next: ->
