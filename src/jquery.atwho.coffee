@@ -438,6 +438,11 @@
             e.preventDefault()
             @$el.data("_view").choose() 
 
+      .on 'mousedown', (e) =>
+            e.stopPropagation()
+            e.preventDefault()
+            return
+
     # 判断视图是否存在
     #
     # @return [Boolean]
