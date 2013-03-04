@@ -70,6 +70,7 @@
     ESC: 27
     TAB: 9
     ENTER: 13
+    SHIFT: 16
 
   # Controller 用于处理渲染数据的一组方法.
   #为了方便开发者可以自定义插件的部分功能而独立出来.
@@ -197,20 +198,20 @@
 
       @$inputor = $(inputor)
       @mirror = new Mirror(@$inputor)
-      @common_settings = $.extend {}, $.fn.atWho.default
+      @common_settings = $.extend {}, $.fn.atwho.default
       @view = new View(this, @$el)
       this.listen()
 
     # 绑定对输入框的各种监听事件
     listen: ->
       @$inputor
-        .on 'keyup.atWho', (e) =>
+        .on 'keyup.atwho', (e) =>
           this.on_keyup(e)
-        .on 'keydown.atWho', (e) =>
+        .on 'keydown.atwho', (e) =>
           this.on_keydown(e)
-        .on 'scroll.atWho', (e) =>
+        .on 'scroll.atwho', (e) =>
           @view.hide()
-        .on 'blur.atWho', (e) =>
+        .on 'blur.atwho', (e) =>
           @view.hide(1000)
 
     # At.js 可以对每个输入框绑定不同的监听标记. 比如同时监听 "@", ":" 字符
@@ -354,7 +355,7 @@
         when KEY_CODE.ESC
           e.preventDefault()
           @view.hide()
-        when KEY_CODE.DOWN, KEY_CODE.UP
+        when KEY_CODE.DOWN, KEY_CODE.UP, KEY_CODE.SHIFT
           $.noop()
         else
           this.look_up()
@@ -524,7 +525,7 @@
 
   DEFAULT_TPL = "<li data-value='${name}'>${name}</li>"
 
-  $.fn.atWho = (flag, options) ->
+  $.fn.atwho = (flag, options) ->
     @.filter('textarea, input').each () ->
       $this = $(this)
       data = $this.data "AtWho"
@@ -532,10 +533,10 @@
       $this.data 'AtWho', (data = new Controller(this)) if not data
       data.reg flag, options
 
-  $.fn.atWho.Controller = Controller
-  $.fn.atWho.View = View
-  $.fn.atWho.Mirror = Mirror
-  $.fn.atWho.default =
+  $.fn.atwho.Controller = Controller
+  $.fn.atwho.View = View
+  $.fn.atwho.Mirror = Mirror
+  $.fn.atwho.default =
       data: null
       search_key: "name"
       callbacks: DEFAULT_CALLBACKS
