@@ -188,7 +188,7 @@
   class Controller
 
     # @param inputor [HTML DOM Object] 输入框
-    constructor: (inputor) ->
+    constructor: (inputor,reg,options) ->
       @settings     = {}
       @common_settings       = {}
       @pos          = 0
@@ -199,6 +199,7 @@
       @$inputor = $(inputor)
       @mirror = new Mirror(@$inputor)
       @common_settings = $.extend {}, $.fn.atwho.default
+      @reg reg ,options
       @view = new View(this, @$el)
       this.listen()
 
@@ -225,6 +226,7 @@
     # @param flag [String] 要监听的字符
     # @param settings [Hash] 配置哈希值
     reg: (flag, settings) ->
+      @inline_append=true if flag==""
       current_settings = {}
       current_settings = if $.isPlainObject(flag)
         @common_settings = $.extend {}, @common_settings, flag
@@ -258,7 +260,7 @@
     # @return [?] 配置项的值
     get_opt: (key, default_value) ->
       try
-        value = @settings[@current_flag][key] if @current_flag?
+        value = if @settings[""] then @settings[""][key]  else @settings[@current_flag][key] if @current_flag?
         value = @common_settings[key] if value is undefined
         value = if value is undefined then default_value else value
       catch e
@@ -426,7 +428,11 @@
     create_view: ->
       return if this.exist()
       tpl = "<div id='#{@id}' class='at-view'><ul id='#{@id}-ul'></ul></div>"
-      $("body").append(tpl)
+      if @controller.inline_append
+        $(tpl).insertAfter(@controller.$inputor)
+      else
+        $("body").append(tpl)
+
       @$el = $("##{@id}")
 
       $menu = @$el.find('ul')
@@ -528,9 +534,9 @@
   $.fn.atwho = (flag, options) ->
     @.filter('textarea, input').each () ->
       $this = $(this)
-      data = $this.data "AtWho"
+      data = $this.data "atwho"
 
-      $this.data 'AtWho', (data = new Controller(this)) if not data
+      $this.data 'atwho', (data = new Controller(this,flag,options)) if not data
       data.reg flag, options
 
   $.fn.atwho.Controller = Controller
