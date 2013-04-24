@@ -103,7 +103,9 @@
     #
     # @return [String] 匹配后得到的字符串
     matcher: (flag, subtext) ->
-      regexp = new RegExp flag+'([A-Za-z0-9_\+\-]*)$|'+flag+'([^\\x00-\\xff]*)$','gi'
+      #排除email格式地址
+      preFlag = "(?:[\\W]"+flag+"|^"+flag+")"
+      regexp = new RegExp preFlag+'([A-Za-z0-9_\+\-]*)$|'+preFlag+'([^\\x00-\\xff]*)$','gi'
       match = regexp.exec subtext
       matched = null
       if match
@@ -272,7 +274,7 @@
     rect: ->
       $inputor = @$inputor
       if document.selection # for IE full
-        Sel = document.selection.createRange()
+        Sel = document.selection.createTextRange()
         x = Sel.boundingLeft + $inputor.scrollLeft()
         y = Sel.boundingTop + $(window).scrollTop() + $inputor.scrollTop()
         bottom = y + Sel.boundingHeight
